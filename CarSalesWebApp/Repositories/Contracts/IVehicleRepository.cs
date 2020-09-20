@@ -1,13 +1,12 @@
 ﻿using CarSalesWebApp.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace CarSalesWebApp.DataPersistance.Contracts
+namespace CarSalesWebApp.Respositories.Contracts
 {
-    public interface IRepository
+    public interface IVehicleRepository
     {
         Task<int> CreateCar(Car newCar);
+        Task<IEnumerable<Car>> GetCar();
     }
 }

@@ -1,18 +1,17 @@
-﻿using CarSalesWebApp.DataPersistance.Contracts;
+﻿using CarSalesWebApp.Respositories.Contracts;
 using CarSalesWebApp.Models;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace CarSalesWebApp.DataPersistance.Services
+namespace CarSalesWebApp.Respositories.Services
 {
-    public class Repository : IRepository
+    public class VehicleRepository : IVehicleRepository
     {
 
         private readonly CarSalesContext _context;
 
-        public Repository(CarSalesContext context)
+        public VehicleRepository(CarSalesContext context)
         {
             _context = context;
         }
@@ -22,6 +21,15 @@ namespace CarSalesWebApp.DataPersistance.Services
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Car>> GetCar()
+        {
+
+            var car = _context.Cars;
+
+            return await car.ToListAsync();
+
+
+        }
         /*  public async Task<Car> GetCar(int id)
           {
               return await _context.Cars.FindAsync(id);

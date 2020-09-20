@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Button, Form, Select, Grid, Segment} from 'semantic-ui-react';
+import { Button, Form, Select, Grid, Segment } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import $ from 'jquery';
 import { Redirect } from 'react-router-dom';
@@ -45,6 +45,7 @@ export class CreateCar extends React.Component {
         this.showToast = this.showToast.bind(this);
     }
 
+    //Handle input change for the form input fields
     handleChange(event, dropdownData) {
         let name = dropdownData ? dropdownData.name : event.target.name;
         let value = dropdownData ? dropdownData.value : event.target.value;
@@ -60,18 +61,21 @@ export class CreateCar extends React.Component {
 
     }
 
-
+    //to redirect to home page/create vehicle page
     redirectPage() {
 
         this.setState({ redirect: true })
 
     }
+
+    //enable display error if the field have invalid data
     errorClass(error) {
         if (error != null) {
             return (error === '' ? false : true);
         }
     };
 
+    //to validate all text feilds of the form
     validateField(fieldName) {
         let fieldValidationErrors = this.state.formErrors;
         let formIsValid = this.state.formValid;
@@ -82,8 +86,9 @@ export class CreateCar extends React.Component {
 
         switch (fieldName) {
             case 'make':
-                fieldValidationErrors.make = this.state.carData.make != ''? '' : 'please enter the make of the Car';
-               // if (fieldValidationErrors.make !== '') { notifyType = "error"; notifyMessage = fieldValidationErrors }
+                fieldValidationErrors.make = this.state.carData.make != '' ? '' : 'please enter the make of the Car';
+                if (!this.state.carData.make.match(/^[a-zA-Z ]*$/)) { fieldValidationErrors.make = 'Please enter Alphabets only'; }
+
                 break;
             case 'model':
                 fieldValidationErrors.model = this.state.carData.model != '' ? '' : ' please enter model of the Car';
@@ -95,13 +100,14 @@ export class CreateCar extends React.Component {
                 fieldValidationErrors.carType = this.state.carData.carType != '' ? '' : 'please select car type ex- fuel/electrical';
                 break;
             case 'badge':
-                fieldValidationErrors.badge = this.state.carData.badge != ''? '' : 'please enter badge of the car';
+                fieldValidationErrors.badge = this.state.carData.badge != '' ? '' : 'please enter badge of the car';
+                if (!this.state.carData.badge.match(/^[a-zA-Z ]*$/)) { fieldValidationErrors.badge = 'Please enter Alphabets only'; }
                 break;
             case 'color':
                 fieldValidationErrors.color = this.state.carData.color != '' ? '' : 'please enter car color ';
                 break;
             case 'bodyType':
-                fieldValidationErrors.bodyType = this.state.carData.bodyType !==''? '' : 'please select body type';
+                fieldValidationErrors.bodyType = this.state.carData.bodyType !== '' ? '' : 'please select body type';
                 break;
             default:
                 break;
@@ -115,9 +121,9 @@ export class CreateCar extends React.Component {
             && fieldValidationErrors.model === ''
             && fieldValidationErrors.condition === '') ? true : false;
 
-           
 
-        if (fieldValidationErrors[ fieldName ] !== "") {
+
+        if (fieldValidationErrors[fieldName] !== "") {
             console.log(fieldValidationErrors.$fieldName)
             notifyType = "error";
             notifyMessage = fieldValidationErrors[fieldName];
@@ -129,7 +135,7 @@ export class CreateCar extends React.Component {
             formValid: formIsValid
         }, () => { this.showToast(notifyType, notifyMessage) });
 
-   }
+    }
     showToast(notifyType, notifyMessage) {
 
         if (notifyType === "error") {
@@ -138,14 +144,14 @@ export class CreateCar extends React.Component {
 
             });
         }
-        
-        
+
+
     }
 
     saveCarData() {
         var carData = this.state.carData;
         $.ajax({
-            url: '/Car/createNewCar',
+            url: '/Vehicle/createNewCar',
             dataType: 'json',
             type: "post",
             contentType: 'application/json',
@@ -153,22 +159,26 @@ export class CreateCar extends React.Component {
             success: function (res) {
                 console.log(res);
                 if (res.success === true) {
-                    
+
                     toast.success("Car Data Added Successully", {
                         position: toast.POSITION.TOP_RIGHT
                     });
-      
+                    setTimeout(() => {
+                        this.setState({ redirect: true })
+                    }, 2000);
+
+
                 } else {
-                    toast.success(res.message, {
+                    toast.error(res.message, {
                         position: toast.POSITION.TOP_RIGHT
                     });
                 }
-            }
+            }.bind(this)
 
-             , error: function (request, status, error) {
-                 toast.success("An Error Occured Please Try Again", {
-                     position: toast.POSITION.TOP_RIGHT
-                 });
+            , error: function (request, status, error) {
+                toast.error("An Error Occured Please Try Again", {
+                    position: toast.POSITION.TOP_RIGHT
+                });
             }
         });
 
@@ -192,7 +202,8 @@ export class CreateCar extends React.Component {
                 badge: null,
                 color: null,
                 odyType: null
-            }
+            },
+            formValid: false
         });
     }
 
@@ -200,13 +211,12 @@ export class CreateCar extends React.Component {
 
     render() {
 
-       
+
 
         let bodyTypeOptions = this.state.bodyTypeOptions.map((x, index) => ({ 'value': x, 'key': index, 'text': x }));
         let conditionOptions = this.state.carCondition.map((x, index) => ({ 'value': x, 'key': index, 'text': x }));
-        let formValid = this.state.formValid;
         let errors = this.state.formErrors;
-       
+
 
         return (
             < div >
@@ -218,18 +228,18 @@ export class CreateCar extends React.Component {
                                 <Grid.Column width={8}>
                                     <Segment>
                                         <Form>
-                                            <Form.Field error={this.errorClass(errors.make)}>
+                                            <Form.Field error={this.errorClass(errors.make)} required>
                                                 <label>Make</label>
                                                 <input
-                                                    placeholder='Brand' name='make' value={this.state.carData.make} onChange={this.handleChange} />
+                                                    placeholder='Brand Ex-Tesla (Alphabets only)' name='make' value={this.state.carData.make} onChange={this.handleChange} />
                                             </Form.Field>
-                                          
-                                            <Form.Field error={this.errorClass(errors.model)}>
+
+                                            <Form.Field error={this.errorClass(errors.model)} required>
                                                 <label>Model</label>
-                                                <input 
-                                                    placeholder='Car Model' name='model' value={this.state.carData.model} onChange={this.handleChange} />
+                                                <input
+                                                    placeholder='Car Model Ex- Tesla Model 3' name='model' value={this.state.carData.model} onChange={this.handleChange} />
                                             </Form.Field>
-                                            
+
                                             <Form.Field
                                                 control={Select}
                                                 name='condition'
@@ -239,21 +249,22 @@ export class CreateCar extends React.Component {
                                                 value={this.state.carData.condition}
                                                 placeholder='Select Car Condition'
                                                 error={this.errorClass(errors.bodyType)}
+                                                required
                                             />
-                                            
-                                            <Form.Field error={this.errorClass(errors.carType)}>
+
+                                            <Form.Field error={this.errorClass(errors.carType)} required>
                                                 <label>Car Type</label>
-                                                <input placeholder='Type' name='carType' value={this.state.carData.carType} onChange={this.handleChange} />
+                                                <input placeholder='Car Type Ex- Electric Series 1' name='carType' value={this.state.carData.carType} onChange={this.handleChange} />
                                             </Form.Field>
-                                            
-                                            <Form.Field error={this.errorClass(errors.badge)}>
+
+                                            <Form.Field error={this.errorClass(errors.badge)} required>
                                                 <label>Badge</label>
-                                                <input placeholder='Badge' name='badge' value={this.state.carData.badge} onChange={this.handleChange} />
+                                                <input placeholder='Badge Ex- Long Range (Alphabets only)' name='badge' value={this.state.carData.badge} onChange={this.handleChange} />
                                             </Form.Field>
-                                           
-                                            <Form.Field>
+
+                                            <Form.Field required>
                                                 <label>Color</label>
-                                                <input placeholder='Color' name='color' value={this.state.carData.color} onChange={this.handleChange} />
+                                                <input placeholder='Color (ex- Royal Blue)' name='color' value={this.state.carData.color} onChange={this.handleChange} />
                                             </Form.Field>
                                             <Form.Field
                                                 control={Select}
@@ -264,9 +275,10 @@ export class CreateCar extends React.Component {
                                                 onChange={this.handleChange}
                                                 placeholder='Select Body Type'
                                                 error={this.errorClass(errors.bodyType)}
+                                                required
                                             />
 
-                                            <Button type='submit' disabled={this.state.formValid? false:true} onClick={() => this.saveCarData()} >Save</Button>
+                                            <Button type='submit' disabled={this.state.formValid ? false : true} onClick={() => this.saveCarData()} >Save</Button>
                                             <Button onClick={() => { this.redirectPage() }} >Cancel</Button>
                                         </Form>
 
@@ -278,7 +290,7 @@ export class CreateCar extends React.Component {
                         </div>
 
                         :
-                        <Redirect to='/create-vehicle' />
+                        <Redirect to='/car-data' />
                 }
             </div>
         );

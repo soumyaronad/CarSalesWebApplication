@@ -1,8 +1,7 @@
-﻿using CarSalesWebApp.CarAppServices.Contracts;
-using CarSalesWebApp.CarAppServices.Service;
+﻿using CarSalesWebApp.Services.Contracts;
 using CarSalesWebApp.Controllers;
-using CarSalesWebApp.DataPersistance.Contracts;
-using CarSalesWebApp.DataPersistance.Services;
+using CarSalesWebApp.Respositories.Contracts;
+using CarSalesWebApp.Respositories.Services;
 using CarSalesWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +11,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using CarSalesWebApp.Services.Service;
 
 namespace XUnitTestCarSales
 {
   public  class UnitTestController
     {
 
-        private Repository repository;
+        private VehicleRepository repository;
      
         public static DbContextOptions<CarSalesContext> dbContextOptions { get; }
 
@@ -36,7 +36,7 @@ namespace XUnitTestCarSales
             var context = new CarSalesContext(dbContextOptions);
             DataDBInitializer db = new DataDBInitializer();
             db.Seed(context);
-            repository = new Repository(context);
+            repository = new VehicleRepository(context);
 
 
 
@@ -48,8 +48,8 @@ namespace XUnitTestCarSales
         {
             //Arrange
             
-            CarService carService = new CarService(repository);
-            var controller = new CarController(carService);
+            VehicleService carService = new VehicleService(repository);
+            var controller = new VehicleController(carService);
             var post = new CreateCarViewModel() {
                 Make = "Hyundai Tucson",
                 Model = "Active 2020",
@@ -74,8 +74,8 @@ namespace XUnitTestCarSales
         public async void Task_Add_InvalidData_Throw_Exeption()
 
         {
-            CarService carService = new CarService(repository);
-            var controller = new CarController(carService);
+            VehicleService carService = new VehicleService(repository);
+            var controller = new VehicleController(carService);
             var post = new CreateCarViewModel()
             {
                 Make = null,

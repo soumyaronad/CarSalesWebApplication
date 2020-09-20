@@ -2,4 +2,11 @@ h4, h5, h2.negative {
     color: #9f3a38;
 }
 
+.box {
+  
+    height: 100%;
+    margin:0px;
+   padding: 0px;
+
+}
 

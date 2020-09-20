@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CarSalesWebApp.Models
 {
@@ -12,7 +8,7 @@ namespace CarSalesWebApp.Models
 
         public CarSalesContext(DbContextOptions<CarSalesContext> options) : base(options)
         {
-
+            Database.EnsureCreated();
         }
 
         public DbSet<Car> Cars { get; set; }

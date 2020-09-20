@@ -1,7 +1,5 @@
-using CarSalesWebApp.CarAppServices.Service;
-using CarSalesWebApp.CarAppServices.Contracts;
-using CarSalesWebApp.DataPersistance.Contracts;
-using CarSalesWebApp.DataPersistance.Services;
+using CarSalesWebApp.Respositories.Contracts;
+using CarSalesWebApp.Respositories.Services;
 using CarSalesWebApp.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +8,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CarSalesWebApp.Services.Contracts;
+using CarSalesWebApp.Services.Service;
 
 namespace CarSalesWebApp
 {
@@ -28,8 +28,8 @@ namespace CarSalesWebApp
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<CarSalesContext>(options => options.UseInMemoryDatabase("InMemoryCarDb"));
-            services.AddScoped<IRepository, Repository>();
-            services.AddScoped<ICarService, CarService>();
+            services.AddScoped<IVehicleRepository, VehicleRepository>();
+            services.AddScoped<IVehicleService, VehicleService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CarSalesWebApp.Models
+﻿namespace CarSalesWebApp.Models
 {
     public class Car : Vehicle
-    {
+    { 
+    
         public string BodyType { get; set; }
 
         public string carType { get; set; }
@@ -15,5 +11,6 @@ namespace CarSalesWebApp.Models
 
         public string Color { get; set; }
 
+      
     }
 }

@@ -1,6 +1,6 @@
-﻿using CarSalesWebApp.CarAppServices.Contracts;
-using CarSalesWebApp.DataPersistance.Contracts;
-using CarSalesWebApp.DataPersistance.Services;
+﻿using CarSalesWebApp.Services.Contracts;
+using CarSalesWebApp.Respositories.Contracts;
+using CarSalesWebApp.Respositories.Services;
 using CarSalesWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using CarSalesWebApp.Services.Service;
 
 namespace XUnitTestCarSales
 {
@@ -22,11 +23,11 @@ namespace XUnitTestCarSales
 
             //Arrange 
             bool result = true;
-            var repository = new Mock<IRepository>();
+            var repository = new Mock<IVehicleRepository>();
 
             repository.Setup(p => p.CreateCar(It.IsAny<Car>())).Returns(Task.FromResult(Convert.ToInt32(result)));
 
-            CarService appService = new CarService(repository.Object);
+            VehicleService appService = new VehicleService(repository.Object);
 
             var post = new CreateCarViewModel()
             {
@@ -55,11 +56,11 @@ namespace XUnitTestCarSales
  
             //Arrange 
             bool result = false;
-            var repository = new Mock<IRepository>();
+            var repository = new Mock<IVehicleRepository>();
 
             repository.Setup(p => p.CreateCar(It.IsAny<Car>())).Returns(Task.FromResult(Convert.ToInt32(result)));
 
-            CarService appService = new CarService(repository.Object);
+            VehicleService appService = new VehicleService(repository.Object);
 
             var post = new CreateCarViewModel()
             {
