@@ -3,6 +3,8 @@ Initial Commit
 
 MVP for Car Sales Web App, as part of the recruitment proceess.
 
+Azure Web App Url - http://carsaleswebappsoumyaronad.azurewebsites.net/
+
 Technical Aspects of the project
 •	Data Store – Entity Framework Core In-Memory Data Provider
 •	Web Api Service Endpoints– Asp.net Core 2.2 
